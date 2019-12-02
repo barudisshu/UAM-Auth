@@ -1,0 +1,43 @@
+<assembly>
+    <id>resources</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>target/classes</directory>
+            <outputDirectory>/bin</outputDirectory>
+            <fileMode>0744</fileMode>
+            <directoryMode>0744</directoryMode>
+            <lineEnding>unix</lineEnding>
+            <!-- It may be Eclipse's bug that it will generate some .formatted
+                files,https://stackoverflow.com/questions/42654029/how-to-avoid-generating-file-with-formatted-extension-in-maven -->
+            <includes>
+                <include>common.sh</include>
+                <include>start.sh</include>
+                <include>stop.sh</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>target/classes</directory>
+            <outputDirectory>/conf</outputDirectory>
+            <includes>
+                <include>application.yml</include>
+                <include>logback.xml</include>
+                <include>data-processor-queue.properties</include>
+            </includes>
+            <fileMode>0644</fileMode>
+            <directoryMode>0644</directoryMode>
+        </fileSet>
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>v2x-data-processor-*.jar</include>
+            </includes>
+            <fileMode>0644</fileMode>
+            <directoryMode>0644</directoryMode>
+        </fileSet>
+    </fileSets>
+</assembly>
