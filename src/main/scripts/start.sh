@@ -25,7 +25,7 @@ pid=$( check_pid $PID_FILE )
 if [[ ! -z "$pid" && "$pid" != " " ]];then
     echo "uam auth is already running."
 else
-    nohup java ${JAVA_OPTS} -jar ${workdir}/lib/v2x-data-processor-1.0.0-dev-SNAPSHOT.jar --spring.config.location=${workdir}/conf/ --logging.config=${workdir}/conf/logback.xml --logging.path=${LOG_PATH} > ${NOHUP_FILE} < /dev/null 2>&1 &
+    nohup java ${JAVA_OPTS} -jar ${workdir}/lib/uam-auth-1.0.0-dev-SNAPSHOT.jar --spring.config.location=${workdir}/conf/ --logging.config=${workdir}/conf/log4j2.xml --logging.path=${LOG_PATH} > ${NOHUP_FILE} < /dev/null 2>&1 &
     pid=$!
     sleep 1
     echo "start uam auth successfully!"
