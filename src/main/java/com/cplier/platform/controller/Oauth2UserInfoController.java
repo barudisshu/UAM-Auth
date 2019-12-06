@@ -3,8 +3,10 @@ package com.cplier.platform.controller;
 import com.cplier.platform.Constants;
 import com.cplier.platform.common.Result;
 import com.cplier.platform.entity.Oauth2UserEntity;
+import com.cplier.platform.exception.UAMException;
 import com.cplier.platform.service.Oauth2AuthService;
 import com.cplier.platform.service.Oauth2UserService;
+import io.swagger.annotations.*;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.error.OAuthError;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
@@ -24,23 +26,56 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-/** 通过access_token获取用户信息 */
+/** 通过accessToken获取用户信息 */
 @RestController
-@RequestMapping("v1/openapi")
+@Api(tags = "openapi相关")
+@RequestMapping("openapi")
 public class Oauth2UserInfoController {
 
   @Resource Oauth2AuthService oauth2AuthService;
 
   @Resource Oauth2UserService oauth2UserService;
 
-  @GetMapping("user_info")
+  @ApiOperation(
+      value = "通过token获取用户信息，校验token合法性",
+      notes = "传入token，获取用户信息",
+      produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "Authorization",
+        value = "授权令牌",
+        required = true,
+        dataType = "string",
+        paramType = "header")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "成功", response = Result.class),
+    @ApiResponse(code = 404, message = "失败", response = Result.class)
+  })
+  @GetMapping("userInfo")
   public HttpEntity userInfo(HttpServletRequest request) throws OAuthSystemException {
     return checkAccessToken(request);
   }
 
-  @GetMapping("nocheck_user_info")
+  @ApiOperation(
+      value = "通过token获取用户信息，不校验token合法性",
+      notes = "传入token，获取用户信息",
+      produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "Authorization",
+        value = "授权令牌",
+        required = true,
+        dataType = "string",
+        paramType = "header")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "成功", response = Result.class),
+    @ApiResponse(code = 404, message = "失败", response = Result.class)
+  })
+  @GetMapping("nocheckUserInfo")
   public HttpEntity nocheckUserInfo(@NotNull HttpServletRequest request)
-      throws OAuthSystemException, OAuthProblemException {
+      throws OAuthSystemException, OAuthProblemException, UAMException {
     return nocheckAccessToken(request);
   }
 
@@ -53,7 +88,7 @@ public class Oauth2UserInfoController {
    * @throws OAuthProblemException e
    */
   private HttpEntity nocheckAccessToken(@NotNull HttpServletRequest request)
-      throws OAuthSystemException, OAuthProblemException {
+      throws OAuthSystemException, OAuthProblemException, UAMException {
 
     // 构建OAuth资源请求
     OAuthAccessResourceRequest oauthRequest =
@@ -62,9 +97,15 @@ public class Oauth2UserInfoController {
     // 获取Access Token
     String accessToken = oauthRequest.getAccessToken();
 
+      String username;
+      Oauth2UserEntity oauth2UserEntity;
     // 获取用户名
-    String username = oauth2AuthService.getUsernameByAccessToken(accessToken);
-    Oauth2UserEntity oauth2UserEntity = oauth2UserService.findByUsername(username);
+    try {
+      username = oauth2AuthService.getUsernameByAccessToken(accessToken);
+      oauth2UserEntity = oauth2UserService.findByUsername(username);
+    } catch (Exception e) {
+        throw new UAMException("token信息无法获取");
+    }
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);

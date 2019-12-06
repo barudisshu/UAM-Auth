@@ -73,7 +73,7 @@ class Oauth2AuthServiceTest {
     oauth2AuthService.addAuthCode(authCode, username);
   }
 
-  @DisplayName("缓存中写入access_token")
+  @DisplayName("缓存中写入accessToken")
   @Test
   void addAccessToken() {
     oauth2AuthService.addAccessToken(accessToken, username);
@@ -85,7 +85,7 @@ class Oauth2AuthServiceTest {
     oauth2AuthService.checkAuthCode(authCode);
   }
 
-  @DisplayName("校验缓存中是否存在access_token")
+  @DisplayName("校验缓存中是否存在accessToken")
   @Test
   void checkAccessToken() {
     oauth2AuthService.checkAccessToken(accessToken);
@@ -97,7 +97,7 @@ class Oauth2AuthServiceTest {
     oauth2AuthService.getUsernameByAuthCode(authCode);
   }
 
-  @DisplayName("通过access_token获取用户名")
+  @DisplayName("通过accessToken获取用户名")
   @Test
   void getUsernameByAccessToken() {
     oauth2AuthService.getUsernameByAccessToken(accessToken);

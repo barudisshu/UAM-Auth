@@ -67,19 +67,19 @@ class Oauth2UserEntityInfoControllerTest {
     given(oauth2UserService.findByUsername(username)).willReturn(oauth2UserEntity);
   }
 
-  @DisplayName("校验access_token")
+  @DisplayName("校验accessToken")
   @Test
   void userInfo() throws Exception {
     given(oauth2UserService.findByUsername(username)).willReturn(oauth2UserEntity);
 
     this.mockMvc
-        .perform(get("/v1/openapi/user_info").header("Authorization", "Bearer " + accessToken))
+        .perform(get("/openapi/userInfo").header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json(objectMapper.writeValueAsString(success(oauth2UserEntity))));
   }
 
-  @DisplayName("校验access_token, token不能存在/过期")
+  @DisplayName("校验accessToken, token不能存在/过期")
   @Test
   void userInfoTokenExpire() throws Exception {
     given(oauth2UserService.findByUsername(username)).willReturn(null);
@@ -89,14 +89,14 @@ class Oauth2UserEntityInfoControllerTest {
     actual.setDesc(Constants.INVALID_ACCESS_TOKEN);
 
     this.mockMvc
-        .perform(get("/v1/openapi/user_info").header("Authorization", "Bearer " + accessToken))
+        .perform(get("/openapi/userInfo").header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json(objectMapper.writeValueAsString(actual)))
         .andReturn();
   }
 
-  @DisplayName("校验access_token, 出现验证错误[有错误码]")
+  @DisplayName("校验accessToken, 出现验证错误[有错误码]")
   @Test
   void userInfoTokenOauthProblemException1() throws Exception {
     given(oauth2AuthService.checkAccessToken(accessToken)).willReturn(true);
@@ -107,14 +107,14 @@ class Oauth2UserEntityInfoControllerTest {
             });
 
     this.mockMvc
-        .perform(get("/v1/openapi/user_info").header("Authorization", "Bearer " + accessToken))
+        .perform(get("/openapi/userInfo").header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json(objectMapper.writeValueAsString(badRequest())))
         .andReturn();
   }
 
-  @DisplayName("校验access_token, 出现验证错误[无错误码]")
+  @DisplayName("校验accessToken, 出现验证错误[无错误码]")
   @Test
   void userInfoTokenOauthProblemException2() throws Exception {
     given(oauth2AuthService.checkAccessToken(accessToken)).willReturn(true);
@@ -125,34 +125,34 @@ class Oauth2UserEntityInfoControllerTest {
             });
 
     this.mockMvc
-        .perform(get("/v1/openapi/user_info").header("Authorization", "Bearer " + accessToken))
+        .perform(get("/openapi/userInfo").header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json(objectMapper.writeValueAsString(unauthorized())))
         .andReturn();
   }
 
-  @DisplayName("不校验access_token")
+  @DisplayName("不校验accessToken")
   @Test
   void nocheckUserInfo() throws Exception {
     given(oauth2UserService.findByUsername(username)).willReturn(oauth2UserEntity);
 
     this.mockMvc
         .perform(
-            get("/v1/openapi/nocheck_user_info").header("Authorization", "Bearer " + accessToken))
+            get("/openapi/nocheckUserInfo").header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json(objectMapper.writeValueAsString(success(oauth2UserEntity))));
   }
 
-  @DisplayName("不校验access_token[失败]")
+  @DisplayName("不校验accessToken[失败]")
   @Test
   void nocheckUserInfoFail() throws Exception {
     given(oauth2UserService.findByUsername(username)).willReturn(null);
 
     this.mockMvc
         .perform(
-            get("/v1/openapi/nocheck_user_info").header("Authorization", "Bearer " + accessToken))
+            get("/openapi/nocheckUserInfo").header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json(objectMapper.writeValueAsString(fail())));

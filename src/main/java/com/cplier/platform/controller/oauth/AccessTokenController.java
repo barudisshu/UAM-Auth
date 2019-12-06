@@ -35,7 +35,7 @@ public class AccessTokenController {
 
   @ApiOperation(
       nickname = "token",
-      value = "access_token请求",
+      value = "accessToken请求",
       notes = "用户获取授权令牌",
       consumes = "application/x-www-form-urlencoded",
       response = Result.class)
@@ -144,13 +144,13 @@ public class AccessTokenController {
    *
    * @return 认证信息
    */
-  @ApiOperation("验证access_token")
+  @ApiOperation("验证accessToken")
   @ApiResponses(
       value = {
         @ApiResponse(code = 200, message = "有效的token"),
         @ApiResponse(code = 401, message = "无效的token")
       })
-  @PostMapping("check_access_token")
+  @PostMapping("check_accessToken")
   public ResponseEntity checkAccessToken(HttpServletRequest request)
       throws OAuthSystemException, OAuthProblemException {
     OAuthAccessResourceRequest oauthRequest =

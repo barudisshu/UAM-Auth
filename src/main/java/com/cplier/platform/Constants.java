@@ -14,5 +14,5 @@ public final class Constants {
   public static final String INVALID_AUTH_CODE = "错误的授权码。";
   // 验证accessToken
   public static final String CHECK_ACCESS_CODE_URL =
-      "http://localhost:8080/check_access_token?accessToken=";
+      "http://localhost:8080/check_accessToken?accessToken=";
 }
