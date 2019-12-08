@@ -35,8 +35,8 @@ create unique index idx_oauth2_client_name on oauth2_client (`client_name`);
 
 
 insert into `oauth2_user`(`uid`, `username`, `password`, `salt`)
-values (UUID(), 'admin', 'd3e184ae-00e2-4187-8a45-af5ef174ef7f', '5c5dec14-6267-4182-b241-0f6c6a5dbc7c');
+values (UUID(), 'admin', '5c5e385a1baf9eea9e34abab476368fd', '0570fabb2d50f9723f6cec76f463680c');
 insert into `oauth2_client`(`client_name`, `client_id`, `client_secret`)
-values ('uam-client', 'c1ebe466-1cdc-4bd3-ab69-77c3561b9dee', 'd8346ea2-6017-43ed-ad68-19c0f971738b');
+values ('uam-client', '302d111b-666f-4e49-ad1e-22ac605d6efe', 'a34b9e7a-4508-45d0-871c-ed4d7c3dcf9c');
 
 SET FOREIGN_KEY_CHECKS = 1;
