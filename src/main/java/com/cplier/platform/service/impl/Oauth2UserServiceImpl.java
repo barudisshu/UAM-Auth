@@ -2,20 +2,23 @@ package com.cplier.platform.service.impl;
 
 import com.cplier.platform.component.PasswordHelper;
 import com.cplier.platform.entity.Oauth2UserEntity;
+import com.cplier.platform.exception.DuplicatedException;
+import com.cplier.platform.exception.EntityNotExistsException;
 import com.cplier.platform.repository.Oauth2UserRepository;
 import com.cplier.platform.service.Oauth2UserService;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.*;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -41,16 +44,30 @@ public class Oauth2UserServiceImpl implements Oauth2UserService {
             () -> new EntityNotFoundException(String.format("uid=%s does not exists", uid)));
   }
 
-  @Caching(evict = {@CacheEvict(key = "#user.uid"), @CacheEvict(key = "#user.username")})
+  @Caching(
+      evict = {
+        @CacheEvict(key = "#user.uid", allEntries = true),
+        @CacheEvict(key = "#user.username", allEntries = true)
+      })
+  @CachePut(key = "#user.uid")
   @Override
-  public Oauth2UserEntity saveOrUpdate(Oauth2UserEntity user) {
+  public Oauth2UserEntity saveOrUpdate(@NotNull Oauth2UserEntity user) {
+    if (StringUtils.isBlank(user.getSalt())) {
+      passwordHelper.encryptPassword(user);
+    }
+    Optional<Oauth2UserEntity> o2ue = oauth2UserRepository.findByUsername(user.getUsername());
+    if (o2ue.isPresent()) throw new DuplicatedException("用户名重复");
     return oauth2UserRepository.saveAndFlush(user);
   }
 
-  @CacheEvict(key = "#uid")
+  @CacheEvict(key = "#uid", allEntries = true)
   @Override
   public void deleteById(String uid) {
-    oauth2UserRepository.deleteById(uid);
+    try {
+      oauth2UserRepository.deleteById(uid);
+    } catch (EmptyResultDataAccessException e) {
+      throw new EntityNotExistsException(e.getMessage(), "没有这个用户id");
+    }
   }
 
   /**
@@ -59,7 +76,7 @@ public class Oauth2UserServiceImpl implements Oauth2UserService {
    * @param uid 用户ID
    * @param newPwd 新的密码
    */
-  @Caching(evict = {@CacheEvict(key = "#uid")})
+  @Caching(evict = {@CacheEvict(key = "#uid", allEntries = true)})
   @Override
   public Oauth2UserEntity changePwd(String uid, String newPwd) {
     Oauth2UserEntity oauth2UserEntity =
@@ -67,7 +84,7 @@ public class Oauth2UserServiceImpl implements Oauth2UserService {
             .findById(uid)
             .orElseThrow(
                 () ->
-                    new EntityNotFoundException(
+                    new EntityNotExistsException(
                         String.format("change password failure, id=%s does not exists", uid)));
     oauth2UserEntity.setPassword(newPwd);
     passwordHelper.encryptPassword(oauth2UserEntity);
@@ -81,7 +98,7 @@ public class Oauth2UserServiceImpl implements Oauth2UserService {
         .findByUsername(username)
         .orElseThrow(
             () ->
-                new EntityNotFoundException(
+                new EntityNotExistsException(
                     String.format("the username=%s does not exists", username)));
   }
 

@@ -80,7 +80,7 @@ class Oauth2ClientEntityControllerTest {
   void find() throws Exception {
     given(oauth2ClientService.findByClientId("client_id")).willReturn(oauth2ClientEntity);
     this.mockMvc
-        .perform(get("/client/client_id"))
+        .perform(get("/client/clientId"))
         .andExpect(status().isOk())
         .andExpect(content().json(objectMapper.writeValueAsString(success(oauth2ClientEntity))));
   }
@@ -110,7 +110,7 @@ class Oauth2ClientEntityControllerTest {
   void deleteByClientId() throws Exception {
     doNothing().when(oauth2ClientService).deleteByClientId("client_id");
     this.mockMvc
-        .perform(delete("/client/client_id"))
+        .perform(delete("/client/clientId"))
         .andExpect(status().isOk())
         .andExpect(content().json(objectMapper.writeValueAsString(success())));
   }
@@ -120,7 +120,7 @@ class Oauth2ClientEntityControllerTest {
   void deleteByClientIdFail() throws Exception {
     doNothing().when(oauth2ClientService).deleteByClientId("client_id");
     this.mockMvc
-        .perform(delete("/client/client_id"))
+        .perform(delete("/client/clientId"))
         .andExpect(status().isInternalServerError())
         .andExpect(content().json(objectMapper.writeValueAsString(fail())));
   }

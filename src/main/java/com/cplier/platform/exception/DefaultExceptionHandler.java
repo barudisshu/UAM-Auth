@@ -2,6 +2,7 @@ package com.cplier.platform.exception;
 
 import com.cplier.platform.common.Result;
 import com.cplier.platform.common.ResultEnum;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
@@ -44,8 +45,29 @@ public class DefaultExceptionHandler {
   @ExceptionHandler(value = EntityNotFoundException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Result handleEntityNotFoundException(EntityNotFoundException e) {
-    log.info("entity error: {}", e.getMessage());
+    log.error("entity error: {}", e.getMessage());
     return Result.of(ResultEnum.BAD_REQUEST, e.getMessage());
+  }
+
+  @ExceptionHandler(value = JsonProcessingException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Result handleJsonException(JsonProcessingException e) {
+    log.error("json error: {}", e.getMessage());
+    return Result.of(ResultEnum.BAD_REQUEST, "json parser error");
+  }
+
+  @ExceptionHandler(value = DuplicatedException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Result handleDuplicatedException(DuplicatedException e) {
+    log.error("duplicated error: {}", e.getDesc());
+    return Result.of(ResultEnum.BAD_REQUEST, e.getDesc());
+  }
+
+  @ExceptionHandler(value = EntityNotExistsException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Result handleNotFoundException(EntityNotExistsException e) {
+    log.error("duplicated error: {}", e.getDesc());
+    return Result.of(ResultEnum.BAD_REQUEST, e.getDesc());
   }
 
   /**

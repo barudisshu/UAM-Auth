@@ -60,7 +60,7 @@ class AuthorizeControllerTest {
         post("/authorize")
             .param("client_id", clientId)
             .param("response_type", "code")
-            .param("redirect_uri", "http://icetai.cn/oauth2/login");
+            .param("redirect_uri", "http://localhost/auth/login");
 
     given(oauth2AuthService.checkClientId(clientId)).willReturn(true);
     given(oauth2AuthService.getUsernameByAccessToken(accessToken)).willReturn(username);
@@ -100,7 +100,7 @@ class AuthorizeControllerTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
             redirectedUrl(
-                "http://icetai.cn/oauth2/login?client_id=client_id&client_secret=client_secret"))
+                "http://localhost/auth/login?client_id=client_id&client_secret=client_secret"))
         .andReturn();
   }
 
@@ -122,10 +122,10 @@ class AuthorizeControllerTest {
   @Test
   void authorize4() throws Exception {
     this.mockMvc
-        .perform(post("/authorize").param("redirect_uri", "http://icetai.cn/oauth2/login"))
+        .perform(post("/authorize").param("redirect_uri", "http://localhost/auth/login"))
         .andExpect(status().isFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(redirectedUrl("http://icetai.cn/oauth2/login"))
+        .andExpect(redirectedUrl("http://localhost/auth/login"))
         .andReturn();
   }
 }

@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface Oauth2ClientRepository extends JpaRepository<Oauth2ClientEntity, String> {
   Optional<Oauth2ClientEntity> findByClientSecret(String clientSecret);
+
+  Optional<Oauth2ClientEntity> findByClientName(String clientName);
 }

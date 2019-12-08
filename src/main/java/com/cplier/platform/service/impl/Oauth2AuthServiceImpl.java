@@ -93,14 +93,12 @@ public class Oauth2AuthServiceImpl implements Oauth2AuthService {
   @Override
   public boolean login(@NotNull HttpServletRequest request) {
     if ("get".equalsIgnoreCase(request.getMethod())) {
-      request.setAttribute(ERROR, ERROR_MSG_ILLEGAL);
       return false;
     }
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
     if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-      request.setAttribute(ERROR, ERROR_MSG_ILLEGAL_CREDENTIAL);
       return false;
     }
     try {
@@ -114,11 +112,9 @@ public class Oauth2AuthServiceImpl implements Oauth2AuthService {
           return true;
         }
       } else {
-        request.setAttribute(ERROR, ERROR_MSG_ILLEGAL_USERNAME);
         return false;
       }
     } catch (Exception e) {
-      request.setAttribute(ERROR, ERROR_MSG_ILLEGAL_LOGIN + e.getClass().getName());
       return false;
     }
   }

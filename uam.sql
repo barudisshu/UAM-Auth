@@ -31,10 +31,12 @@ create table `oauth2_client`
     constraint pk_oauth2_client primary key (`client_id`)
 ) charset = utf8
   ENGINE = InnoDB;
+create unique index idx_oauth2_client_name on oauth2_client (`client_name`);
+
 
 insert into `oauth2_user`(`uid`, `username`, `password`, `salt`)
-values (UUID(), 'admin', 'd3c59d25033dbf980d29554025c23a75', '8d78869f470951332959580424d4bf4f');
+values (UUID(), 'admin', 'd3e184ae-00e2-4187-8a45-af5ef174ef7f', '5c5dec14-6267-4182-b241-0f6c6a5dbc7c');
 insert into `oauth2_client`(`client_name`, `client_id`, `client_secret`)
-values ('zetark-client', 'c1ebe466-1cdc-4bd3-ab69-77c3561b9dee', 'd8346ea2-6017-43ed-ad68-19c0f971738b');
+values ('uam-client', 'c1ebe466-1cdc-4bd3-ab69-77c3561b9dee', 'd8346ea2-6017-43ed-ad68-19c0f971738b');
 
 SET FOREIGN_KEY_CHECKS = 1;

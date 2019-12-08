@@ -56,7 +56,7 @@ public class PasswordHelper {
   public String encryptPassword(
       @NotBlank String username, @NotBlank String password, @NotBlank String salt) {
     return new SimpleHash(
-            algorithmName, password, ByteSource.Util.bytes(username + salt), hashIterations)
+            algorithmName, password, ByteSource.Util.bytes(salt), hashIterations)
         .toHex();
   }
 }

@@ -130,7 +130,7 @@ class Oauth2UserEntityControllerTest {
   void changePassword() throws Exception {
     given(oauth2UserService.changePwd("uid", "newPwd")).willReturn(oauth2UserEntity);
     this.mockMvc
-        .perform(post("/user/uid/change_password").param("newPassword", "newPwd"))
+        .perform(post("/user/uid/changePassword").param("newPassword", "newPwd"))
         .andExpect(status().isOk())
         .andExpect(content().json(objectMapper.writeValueAsString(success())));
   }
@@ -140,7 +140,7 @@ class Oauth2UserEntityControllerTest {
   void changePasswordFail() throws Exception {
     given(oauth2UserService.changePwd("uid", "newPwd")).willThrow(EntityNotFoundException.class);
     this.mockMvc
-        .perform(post("/user/uid/change_password").param("newPassword", "newPwd"))
+        .perform(post("/user/uid/changePassword").param("newPassword", "newPwd"))
         .andExpect(status().isInternalServerError())
         .andExpect(content().json(objectMapper.writeValueAsString(fail())));
   }

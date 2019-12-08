@@ -102,7 +102,7 @@ class AccessTokenControllerTest {
   void checkAccessTokenPass() throws Exception {
     given(oauth2AuthService.checkAccessToken(accessToken)).willReturn(true);
     this.mockMvc
-        .perform(post("/check_accessToken").header("Authorization", "Bearer " + accessToken))
+        .perform(post("/checkAccessToken").header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andReturn();
@@ -113,7 +113,7 @@ class AccessTokenControllerTest {
   void checkAccessTokenFail() throws Exception {
     given(oauth2AuthService.checkAccessToken(accessToken)).willReturn(false);
     this.mockMvc
-        .perform(post("/check_accessToken").header("Authorization", "Bearer " + accessToken))
+        .perform(post("/checkAccessToken").header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andReturn();

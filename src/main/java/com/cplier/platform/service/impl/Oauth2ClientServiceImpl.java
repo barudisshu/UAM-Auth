@@ -1,18 +1,21 @@
 package com.cplier.platform.service.impl;
 
 import com.cplier.platform.entity.Oauth2ClientEntity;
+import com.cplier.platform.exception.DuplicatedException;
+import com.cplier.platform.exception.EntityNotExistsException;
 import com.cplier.platform.repository.Oauth2ClientRepository;
 import com.cplier.platform.service.Oauth2ClientService;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -34,8 +37,8 @@ public class Oauth2ClientServiceImpl implements Oauth2ClientService {
         .findById(clientId)
         .orElseThrow(
             () ->
-                new EntityNotFoundException(
-                    String.format("the client_id=%s does not exists", clientId)));
+                new EntityNotExistsException(
+                    String.format("the clientId=%s does not exists", clientId)));
   }
 
   @Cacheable(key = "#clientSecret")
@@ -45,8 +48,8 @@ public class Oauth2ClientServiceImpl implements Oauth2ClientService {
         .findByClientSecret(clientSecret)
         .orElseThrow(
             () ->
-                new EntityNotFoundException(
-                    String.format("the client_secret=%s does not exists", clientSecret)));
+                new EntityNotExistsException(
+                    String.format("the clientSecret=%s does not exists", clientSecret)));
   }
 
   /**
@@ -56,10 +59,15 @@ public class Oauth2ClientServiceImpl implements Oauth2ClientService {
    * @return 插入或更新后的数据
    */
   @Caching(
-      evict = {@CacheEvict(key = "#client.clientId"), @CacheEvict(key = "#client.clientSecret")})
+      evict = {
+        @CacheEvict(key = "#client.clientId", allEntries = true),
+        @CacheEvict(key = "#client.clientSecret", allEntries = true)
+      })
   @Override
   public Oauth2ClientEntity saveOrUpdate(Oauth2ClientEntity client) {
-    return oauth2ClientRepository.saveAndFlush(client);
+      Optional<Oauth2ClientEntity> bff = oauth2ClientRepository.findByClientName(client.getClientName());
+      if (bff.isPresent()) throw new DuplicatedException("客户端名重复");
+      return oauth2ClientRepository.saveAndFlush(client);
   }
 
   /**
@@ -67,9 +75,13 @@ public class Oauth2ClientServiceImpl implements Oauth2ClientService {
    *
    * @param clientId clientId
    */
-  @CacheEvict(key = "#clientId")
+  @CacheEvict(key = "#clientId", allEntries = true)
   @Override
   public void deleteByClientId(String clientId) {
-    oauth2ClientRepository.deleteById(clientId);
+      try {
+          oauth2ClientRepository.deleteById(clientId);
+      } catch (EmptyResultDataAccessException e) {
+          throw new EntityNotExistsException(e.getMessage(), "没有这个clientId");
+      }
   }
 }

@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -24,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /** 仅用于异常情况的排查，非业务逻辑接口 */
+@ApiIgnore
 @RestController
 @RequestMapping("digest")
 public class Oauth2DigestController {

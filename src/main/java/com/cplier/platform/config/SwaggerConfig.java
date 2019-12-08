@@ -33,8 +33,8 @@ public class SwaggerConfig {
     return new ApiInfoBuilder()
         .title("统一认证API")
         .description("统一认证相关API接口")
-        .termsOfServiceUrl("http://icetai.cn:9561")
-        .contact(new Contact("Galudisu", "http://icetai.cn", "galudisu@gmail.com"))
+        .termsOfServiceUrl("http://localhost:9561")
+        .contact(new Contact("Galudisu", "http://localhost", "galudisu@gmail.com"))
         .license("MIT")
         .version("1.0")
         .build();

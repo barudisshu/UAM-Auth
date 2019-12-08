@@ -1,6 +1,8 @@
 package com.cplier.platform.config;
 
 import com.cplier.platform.Constants;
+import com.cplier.platform.servlet.ParameterRequestFileter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,5 +35,13 @@ public class WebConfig {
     messageSource.setBasename("messages/messages");
     messageSource.setDefaultEncoding(Constants.ENCODING);
     return messageSource;
+  }
+
+  @Bean
+  public FilterRegistrationBean<ParameterRequestFileter> filterRegistrationBean() {
+    FilterRegistrationBean<ParameterRequestFileter> registration = new FilterRegistrationBean<>();
+    registration.setFilter(new ParameterRequestFileter());
+    registration.addUrlPatterns("/*");
+    return registration;
   }
 }

@@ -1,6 +1,7 @@
 package com.cplier.platform.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,13 +18,15 @@ import java.util.Date;
 @Setter
 public abstract class AuditModel extends BaseEntity {
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "updated_time", columnDefinition = "timestamp default now() on update now()", nullable = false)
     @LastModifiedDate
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Date updatedTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "created_time", columnDefinition = "timestamp default now()", nullable = false, updatable = false)
     @CreatedDate
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Date createdTime;
 }
