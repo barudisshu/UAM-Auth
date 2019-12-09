@@ -6,6 +6,7 @@ import com.cplier.platform.dto.request.Oauth2UserUpdateRequest;
 import com.cplier.platform.entity.Oauth2UserEntity;
 import com.cplier.platform.service.Oauth2UserService;
 import io.swagger.annotations.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,7 +22,7 @@ public class Oauth2UserController {
     @ApiResponse(code = 200, message = "成功", response = Result.class),
     @ApiResponse(code = 404, message = "失败", response = Result.class)
   })
-  @GetMapping
+  @GetMapping(value = {"", "list"})
   public Result list() {
     return Result.success(oauth2UserService.findAll());
   }
@@ -31,7 +32,7 @@ public class Oauth2UserController {
     @ApiResponse(code = 200, message = "成功", response = Result.class),
     @ApiResponse(code = 404, message = "失败", response = Result.class)
   })
-  @PutMapping
+  @PutMapping(value = {"", "register"})
   public Result create(@ApiParam("用户信息") @RequestBody Oauth2UserCreateRequest request) {
     Oauth2UserEntity entity = request.mapping();
     oauth2UserService.saveOrUpdate(entity);
@@ -58,9 +59,36 @@ public class Oauth2UserController {
       @ApiParam("uid") @PathVariable("uid") String uid,
       @ApiParam("json") @RequestBody Oauth2UserUpdateRequest request) {
     Oauth2UserEntity entity = oauth2UserService.findById(uid);
-    entity.setUsername(request.getUsername());
-    oauth2UserService.saveOrUpdate(entity);
+    oauth2UserService.saveOrUpdate(request.wrap(entity));
     return Result.success(entity);
+  }
+
+  @ApiOperation(value = "检查用户名", notes = "注册时，检查用户名是否唯一", produces = "application/json")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "成功", response = Result.class),
+    @ApiResponse(code = 404, message = "失败", response = Result.class)
+  })
+  @GetMapping("checkUsernameAvailability")
+  public Result checkUsername(@Param("username") String username) {
+    if (oauth2UserService.checkUsername(username)) {
+      return Result.fail();
+    } else {
+      return Result.success();
+    }
+  }
+
+  @ApiOperation(value = "检查邮箱", notes = "注册时，检查邮箱是否唯一", produces = "application/json")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "成功", response = Result.class),
+    @ApiResponse(code = 404, message = "失败", response = Result.class)
+  })
+  @GetMapping("checkEmailAvailability")
+  public Result checkEmail(@Param("email") String email) {
+    if (oauth2UserService.checkEmail(email)) {
+      return Result.fail();
+    } else {
+      return Result.success();
+    }
   }
 
   @ApiOperation(value = "删除一条user", notes = "删除", produces = "application/json")

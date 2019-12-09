@@ -18,13 +18,13 @@ import java.util.Date;
 @Setter
 public abstract class AuditModel extends BaseEntity {
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_time", columnDefinition = "timestamp default now() on update now()", nullable = false)
     @LastModifiedDate
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Date updatedTime;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_time", columnDefinition = "timestamp default now()", nullable = false, updatable = false)
     @CreatedDate
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

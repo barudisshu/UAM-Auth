@@ -54,7 +54,6 @@ class Oauth2UserEntityServiceTest {
     doNothing().when(oauth2UserRepository).deleteById(any());
     when(oauth2UserRepository.findByUsername(any())).thenReturn(Optional.of(oauth2UserEntity));
     when(passwordHelper.encryptPassword(
-            oauth2UserEntity.getUsername(),
             oauth2UserEntity.getPassword(),
             oauth2UserEntity.getSalt()))
         .thenCallRealMethod();
@@ -102,7 +101,6 @@ class Oauth2UserEntityServiceTest {
   void checkUser() {
     boolean valid =
         oauth2UserService.checkUser(
-            oauth2UserEntity.getUsername(),
             oauth2UserEntity.getPassword(),
             oauth2UserEntity.getSalt(),
             "052dd288ba734312bdc0d800f21c85f0");

@@ -90,6 +90,12 @@ public class Oauth2AuthServiceImpl implements Oauth2AuthService {
     return oauth2ClientService.findByClientSecret(clientSecret) != null;
   }
 
+  /**
+   * 用户名，或者邮箱都可以登录
+   *
+   * @param request 请求
+   * @return boolean
+   */
   @Override
   public boolean login(@NotNull HttpServletRequest request) {
     if ("get".equalsIgnoreCase(request.getMethod())) {
@@ -102,10 +108,9 @@ public class Oauth2AuthServiceImpl implements Oauth2AuthService {
       return false;
     }
     try {
-      Oauth2UserEntity oauth2UserEntity = oauth2UserService.findByUsername(username);
+      Oauth2UserEntity oauth2UserEntity = oauth2UserService.findByIdentified(username);
       if (oauth2UserEntity != null) {
-        if (!oauth2UserService.checkUser(
-            username, password, oauth2UserEntity.getSalt(), oauth2UserEntity.getPassword())) {
+        if (!oauth2UserService.checkUser(password, oauth2UserEntity.getSalt(), oauth2UserEntity.getPassword())) {
           request.setAttribute(ERROR, ERROR_MSG_ILLEGAL_PASS);
           return false;
         } else {

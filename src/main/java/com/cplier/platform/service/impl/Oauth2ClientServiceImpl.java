@@ -41,7 +41,6 @@ public class Oauth2ClientServiceImpl implements Oauth2ClientService {
                     String.format("the clientId=%s does not exists", clientId)));
   }
 
-  @Cacheable(key = "#clientSecret")
   @Override
   public Oauth2ClientEntity findByClientSecret(String clientSecret) {
     return oauth2ClientRepository
@@ -60,8 +59,7 @@ public class Oauth2ClientServiceImpl implements Oauth2ClientService {
    */
   @Caching(
       evict = {
-        @CacheEvict(key = "#client.clientId", allEntries = true),
-        @CacheEvict(key = "#client.clientSecret", allEntries = true)
+        @CacheEvict(key = "#client.clientId", allEntries = true)
       })
   @Override
   public Oauth2ClientEntity saveOrUpdate(Oauth2ClientEntity client) {

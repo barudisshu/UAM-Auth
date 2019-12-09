@@ -144,7 +144,7 @@ class Oauth2AuthServiceTest {
   @Test
   void checkLogin3() {
     when(oauth2UserService.findByUsername(any())).thenReturn(null);
-    when(oauth2UserService.checkUser(username, password, salt, password)).thenReturn(true);
+    when(oauth2UserService.checkUser(password, salt, password)).thenReturn(true);
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addParameter("username", username);
     request.addParameter("password", password);
@@ -155,7 +155,7 @@ class Oauth2AuthServiceTest {
   @Test
   void checkLogin4() {
     when(oauth2UserService.findByUsername(any())).thenReturn(oauth2UserEntity);
-    when(oauth2UserService.checkUser(username, password, salt, password)).thenReturn(false);
+    when(oauth2UserService.checkUser(password, salt, password)).thenReturn(false);
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addParameter("username", username);
     request.addParameter("password", password);
@@ -166,7 +166,7 @@ class Oauth2AuthServiceTest {
   @Test
   void checkLogin5() {
     when(oauth2UserService.findByUsername(any())).thenReturn(oauth2UserEntity);
-    when(oauth2UserService.checkUser(username, password, salt, password)).thenReturn(true);
+    when(oauth2UserService.checkUser(password, salt, password)).thenReturn(true);
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addParameter("username", username);
     request.addParameter("password", password);

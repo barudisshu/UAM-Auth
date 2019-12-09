@@ -15,12 +15,12 @@ public class Oauth2ClientEntity extends AuditModel {
 
   @Id
   @GeneratedValue(generator = "uuid2")
-  @Column(name = "client_id", unique = true, length = 64, nullable = false)
+  @Column(name = "`client_id`", unique = true, length = 64, nullable = false)
   private String clientId;
 
-  @Column(name = "client_secret", unique = true, length = 64, nullable = false)
+  @Column(name = "`client_secret`", unique = true, length = 64, nullable = false)
   private String clientSecret;
 
-  @Column(name = "client_name", length = 100)
+  @Column(name = "`client_name`", length = 100)
   private String clientName;
 }

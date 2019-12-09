@@ -1,7 +1,6 @@
 package com.cplier.platform.service;
 
 import com.cplier.platform.entity.Oauth2UserEntity;
-import com.cplier.platform.exception.UAMException;
 
 import java.util.List;
 
@@ -19,14 +18,31 @@ public interface Oauth2UserService {
 
   Oauth2UserEntity findByUsername(String username);
 
+  Oauth2UserEntity findByIdentified(String identified);
+
+  Oauth2UserEntity findByEmail(String email);
+
   /**
    * 验证登录
    *
-   * @param username 用户名
    * @param password 密码
    * @param salt 盐
    * @param encryptpwd 加密后的密码
    * @return boolean
    */
-  boolean checkUser(String username, String password, String salt, String encryptpwd);
+  boolean checkUser(String password, String salt, String encryptpwd);
+
+  /**
+   * 验证用户名是否存在
+   *
+   * @param username 用户名
+   */
+  boolean checkUsername(String username);
+
+  /**
+   * 验证邮箱是否存在
+   *
+   * @param email 邮箱
+   */
+  boolean checkEmail(String email);
 }

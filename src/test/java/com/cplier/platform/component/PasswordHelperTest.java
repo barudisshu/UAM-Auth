@@ -48,7 +48,7 @@ class PasswordHelperTest {
   @DisplayName("校验加密信息")
   @Test
   void testEncryptPassword() {
-    String actualEncyptPwd = passwordHelper.encryptPassword(username, password, salt);
+    String actualEncyptPwd = passwordHelper.encryptPassword(password, salt);
     assertEquals(actualEncryptPwd, actualEncyptPwd);
   }
 }

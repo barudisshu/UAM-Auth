@@ -102,7 +102,7 @@ public class Oauth2UserInfoController {
     // 获取用户名
     try {
       username = oauth2AuthService.getUsernameByAccessToken(accessToken);
-      oauth2UserEntity = oauth2UserService.findByUsername(username);
+      oauth2UserEntity = oauth2UserService.findByIdentified(username);
     } catch (Exception e) {
         throw new UAMException("token信息无法获取");
     }
@@ -150,7 +150,7 @@ public class Oauth2UserInfoController {
       }
       // 获取用户名
       String username = oauth2AuthService.getUsernameByAccessToken(accessToken);
-      Oauth2UserEntity oauth2UserEntity = oauth2UserService.findByUsername(username);
+      Oauth2UserEntity oauth2UserEntity = oauth2UserService.findByIdentified(username);
 
       return new ResponseEntity<>(Result.success(oauth2UserEntity), HttpStatus.OK);
     } catch (OAuthProblemException e) {

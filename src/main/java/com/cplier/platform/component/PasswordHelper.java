@@ -49,12 +49,10 @@ public class PasswordHelper {
   /**
    * 根据用户名和盐值加密
    *
-   * @param username 用户名
    * @param password 密码
    * @param salt 盐
    */
-  public String encryptPassword(
-      @NotBlank String username, @NotBlank String password, @NotBlank String salt) {
+  public String encryptPassword(@NotBlank String password, @NotBlank String salt) {
     return new SimpleHash(
             algorithmName, password, ByteSource.Util.bytes(salt), hashIterations)
         .toHex();
